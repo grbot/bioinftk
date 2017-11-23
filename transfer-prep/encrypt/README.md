@@ -17,7 +17,7 @@ In `nextflow.config` to change when running on your own data
 * `key` = the GPG key file
 * `key_phrase` = the GPG key phrase
 * `out` = output directory that will contain the individual encrypted files
-*`project_name ` = just a base name to give to your run to distinguis it from other runs. Useful on cluster.
+* `project_name ` = just a base name to give to your run to distinguis it from other runs. Useful on cluster.
 * In the `standard` profile `process.cpu` = the number of threads to spawn on local machine
 
 
