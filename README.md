@@ -1,2 +1,2 @@
 # bioinftk
-Some bioinformatics helper scripts I find useful
+Some bioinformatics helper scripts
