@@ -4,9 +4,7 @@ in_files = file(params.in_files)
 out_dir = file(params.out_dir)
 
 Channel.fromPath(in_files)
-        .into { vcfs; vcfs_2 }
-
-vcfs_2.subscribe{ println it}
+        .set { vcfs }
 
 process getRTGVcfstats {
     tag { "${params.project_name}.${vcf}.gRTGS" }
