@@ -1,0 +1,6 @@
+2019-06-11 21:13:08	7.9s	peaceful_poincare	ERR	0e77fd223e69d3c74b5a3c0d38a7819d	1f872614-7f11-43d2-bf9f-427e5699d8db	nextflow run main.nf
+2019-06-11 21:13:55	7.6s	amazing_caravaggio	ERR	ecbb91510646e872985ddef8189686d8	d9e89651-a465-4264-b40f-e53da8b16381	nextflow run main.nf
+2019-06-11 21:15:00	2m 1s	reverent_kirch	OK	3658a36f2a3e9c7d3fbb6c8a2379305f	30b6fbd5-88a8-4ac1-9535-52a40dd086b8	nextflow run main.nf
+2019-06-12 12:19:49	1m 34s	adoring_engelbart	OK	3658a36f2a3e9c7d3fbb6c8a2379305f	7be431a2-c99d-45ea-a048-aaf7af8178ec	nextflow run main.nf
+2019-06-12 13:09:21	5.8s	infallible_lovelace	ERR	c81ae31a5c93cfd1b7b2e855bba6f67b	7889b8ad-7115-430d-bee0-b62aa386a58e	nextflow run main.nf
+2019-06-12 13:09:46	1m 48s	soggy_davinci	OK	24254dfb0cae523e141f562e8c8ba500	053ee603-0b20-4e3b-be6f-afe2b78cd626	nextflow run main.nf
