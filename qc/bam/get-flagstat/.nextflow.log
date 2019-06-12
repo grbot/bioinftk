@@ -1,0 +1,48 @@
+Jun-12 20:01:45.648 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf
+Jun-12 20:01:45.742 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 19.04.1
+Jun-12 20:01:45.755 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [elated_ampere] - revision: f3c8aa5be6
+Jun-12 20:01:45.780 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/nextflow.config
+Jun-12 20:01:45.781 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/nextflow.config
+Jun-12 20:01:45.836 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `standard`
+Jun-12 20:01:46.231 [main] DEBUG nextflow.Session - Session uuid: 40153782-b45d-4fbb-9a8d-3c9fad47ab06
+Jun-12 20:01:46.231 [main] DEBUG nextflow.Session - Run name: elated_ampere
+Jun-12 20:01:46.232 [main] DEBUG nextflow.Session - Executor pool size: 8
+Jun-12 20:01:46.262 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 19.04.1 build 5072
+  Modified: 03-05-2019 12:29 UTC (14:29 SAST)
+  System: Linux 4.15.0-20-generic
+  Runtime: Groovy 2.5.6 on OpenJDK 64-Bit Server VM 10.0.2+13-Ubuntu-1ubuntu0.18.04.2
+  Encoding: UTF-8 (UTF-8)
+  Process: 8156@nautilus [127.0.1.1]
+  CPUs: 8 - Mem: 15.5 GB (10 GB) - Swap: 31.8 GB (31.8 GB)
+Jun-12 20:01:46.284 [main] DEBUG nextflow.Session - Work-dir: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/work [ext2/ext3]
+Jun-12 20:01:46.284 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/bin
+Jun-12 20:01:46.410 [main] DEBUG nextflow.Session - Session start invoked
+Jun-12 20:01:46.414 [main] DEBUG nextflow.processor.TaskDispatcher - Dispatcher > start
+Jun-12 20:01:46.416 [main] DEBUG nextflow.script.ScriptRunner - > Script parsing
+Jun-12 20:01:46.522 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jun-12 20:01:46.684 [main] DEBUG nextflow.processor.ProcessFactory - << taskConfig executor: local
+Jun-12 20:01:46.684 [main] DEBUG nextflow.processor.ProcessFactory - >> processorType: 'local'
+Jun-12 20:01:46.691 [main] DEBUG nextflow.executor.Executor - Initializing executor: local
+Jun-12 20:01:46.693 [main] INFO  nextflow.executor.Executor - [warm up] executor > local
+Jun-12 20:01:46.698 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=8; memory=15.5 GB; capacity=8; pollInterval=100ms; dumpInterval=5m
+Jun-12 20:01:46.703 [main] DEBUG nextflow.processor.TaskDispatcher - Starting monitor: LocalPollingMonitor
+Jun-12 20:01:46.703 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Jun-12 20:01:46.705 [main] DEBUG nextflow.executor.Executor - Invoke register for executor: local
+Jun-12 20:01:46.757 [main] DEBUG nextflow.Session - >>> barrier register (process: getSamtoolsFlagstat)
+Jun-12 20:01:46.760 [main] DEBUG nextflow.processor.TaskProcessor - Creating operator > getSamtoolsFlagstat -- maxForks: 8
+Jun-12 20:01:46.794 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+Jun-12 20:01:46.794 [main] DEBUG nextflow.Session - Session await
+Jun-12 20:01:46.863 [Actor Thread 4] WARN  nextflow.container.SingularityCache - Singularity cache directory has not been defined -- Remote image will be stored in the path: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/work/singularity
+Jun-12 20:01:46.864 [Actor Thread 4] INFO  nextflow.container.SingularityCache - Pulling Singularity image docker://quay.io/biocontainers/samtools:0.1.19--h94a8ba4_6 [cache /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/work/singularity/quay.io-biocontainers-samtools-0.1.19--h94a8ba4_6.img]
+Jun-12 20:02:15.500 [Actor Thread 4] DEBUG nextflow.container.SingularityCache - Singularity pull complete image=docker://quay.io/biocontainers/samtools:0.1.19--h94a8ba4_6 path=/home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/work/singularity/quay.io-biocontainers-samtools-0.1.19--h94a8ba4_6.img
+Jun-12 20:02:15.614 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jun-12 20:02:15.620 [Task submitter] INFO  nextflow.Session - [d8/77af98] Submitted process > getSamtoolsFlagstat (gsfs.NA12878_small.md.recal.bam.gSF)
+Jun-12 20:02:15.944 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: getSamtoolsFlagstat (gsfs.NA12878_small.md.recal.bam.gSF); status: COMPLETED; exit: 0; error: -; workDir: /home/gerrit/gerrit.botha@uct.ac.za/machine/workspace/bioinftk/qc/bam/get-flagstat/work/d8/77af98ee37b2bd3e5799ab3b136a9e]
+Jun-12 20:02:15.959 [Actor Thread 2] DEBUG nextflow.Session - <<< barrier arrive (process: getSamtoolsFlagstat)
+Jun-12 20:02:15.960 [main] DEBUG nextflow.Session - Session await > all process finished
+Jun-12 20:02:15.962 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local)
+Jun-12 20:02:15.962 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jun-12 20:02:15.977 [main] DEBUG nextflow.trace.StatsObserver - Workflow completed > WorkflowStats[succeedCount=1; failedCount=0; ignoredCount=0; cachedCount=0; succeedDuration=230ms; failedDuration=0ms; cachedDuration=0ms]
+Jun-12 20:02:16.057 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+Jun-12 20:02:16.065 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
