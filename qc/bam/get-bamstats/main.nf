@@ -4,23 +4,22 @@ in_files = file(params.in_files)
 out_dir = file(params.out_dir)
 
 Channel.fromPath(in_files)
-        .set { vcfs }
+        .set { bams }
 
-process getRTGVcfstats {
-    tag { "${params.project_name}.${vcf}.gRTGS" }
+process getBamStats {
+    tag { "${params.project_name}.${bam}.gBS" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
+    memory { 4.GB * task.attempt }
 
     input:
-	  file (vcf) from vcfs
+	  file (bam) from bams
 
     output:
-	  file("${vcf}.rtg-vcfstats.known") into vcfstats_known_file
-	  file("${vcf}.rtg-vcfstats.novel") into vcfstats_indel_file
+	  set file("${bam}.bamstats.html"), ("${bam}.bamstats.html.data/*") into bamstats
 
     script:
     """
-    rtg vcfstats --known ${vcf} > "${vcf}.rtg-vcfstats.known"
-    rtg vcfstats --novel ${vcf} > "${vcf}.rtg-vcfstats.novel"
+    java -Xmx${task.memory.toGiga()}g -jar /BAMStats-1.25/BAMStats-1.25.jar -i ${bam} -v html -o "${bam}.bamstats.html"
     """
 }
 

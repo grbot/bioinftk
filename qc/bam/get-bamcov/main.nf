@@ -4,26 +4,25 @@ in_files = file(params.in_files)
 out_dir = file(params.out_dir)
 
 Channel.fromPath(in_files)
-        .set { vcfs }
+        .set { bams }
 
-process getRTGVcfstats {
-    tag { "${params.project_name}.${vcf}.gRTGS" }
+process getBamCov {
+    tag { "${params.project_name}.${bam}.gBC" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
+    memory { 4.GB * task.attempt }
 
     input:
-	  file (vcf) from vcfs
+	  file (bam) from bams
 
     output:
-	  file("${vcf}.rtg-vcfstats.known") into vcfstats_known_file
-	  file("${vcf}.rtg-vcfstats.novel") into vcfstats_indel_file
+	  set file("${bam}.bamcov.stats"), ("${bam}.bamcov.hist") into bamcov
 
     script:
     """
-    rtg vcfstats --known ${vcf} > "${vcf}.rtg-vcfstats.known"
-    rtg vcfstats --novel ${vcf} > "${vcf}.rtg-vcfstats.novel"
+    bamcov ${bam} "${bam}.bamcov.stats"
+    bamcov -m ${bam} "${bam}.bamcov.hist"
     """
 }
-
 
 workflow.onComplete {
 

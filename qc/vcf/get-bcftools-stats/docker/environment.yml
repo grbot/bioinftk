@@ -1,0 +1,11 @@
+# You can use this file to create a conda environment for this pipeline:
+# conda env create -f environment.yml
+name: bcftools
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - python=2.7
+  - bcftools
+  - perl 5.26.2
+  - matplotlib

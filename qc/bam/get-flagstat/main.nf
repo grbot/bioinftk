@@ -4,23 +4,21 @@ in_files = file(params.in_files)
 out_dir = file(params.out_dir)
 
 Channel.fromPath(in_files)
-        .set { vcfs }
+        .set { bams }
 
-process getRTGVcfstats {
-    tag { "${params.project_name}.${vcf}.gRTGS" }
+process getSamtoolsFlagstat {
+    tag { "${params.project_name}.${bam}.gSF" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
 
     input:
-	  file (vcf) from vcfs
+	  file (bam) from bams
 
     output:
-	  file("${vcf}.rtg-vcfstats.known") into vcfstats_known_file
-	  file("${vcf}.rtg-vcfstats.novel") into vcfstats_indel_file
+	  file("${bam}.flagstat") into samtools_flagstat
 
     script:
     """
-    rtg vcfstats --known ${vcf} > "${vcf}.rtg-vcfstats.known"
-    rtg vcfstats --novel ${vcf} > "${vcf}.rtg-vcfstats.novel"
+    samtools flagstat ${bam} > "${bam}.flagstat"
     """
 }
 

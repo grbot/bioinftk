@@ -1,12 +1,13 @@
 #!/usr/bin/env nextflow
 
 in_files = file(params.in_files)
+ref = file(params.ref)
 out_dir = file(params.out_dir)
 
 Channel.fromPath(in_files)
         .set { vcfs }
 
-process getRTGVcfstats {
+process getBcftoolsStats {
     tag { "${params.project_name}.${vcf}.gRTGS" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
 
@@ -14,13 +15,14 @@ process getRTGVcfstats {
 	  file (vcf) from vcfs
 
     output:
-	  file("${vcf}.rtg-vcfstats.known") into vcfstats_known_file
-	  file("${vcf}.rtg-vcfstats.novel") into vcfstats_indel_file
+    file ("${vcf}.bcftools-stats") into bcftools_stats_file
+    file ("${vcf}.bcftools-stats.pdf") into bcftools_stats_report_file
 
     script:
     """
-    rtg vcfstats --known ${vcf} > "${vcf}.rtg-vcfstats.known"
-    rtg vcfstats --novel ${vcf} > "${vcf}.rtg-vcfstats.novel"
+    bcftools stats -F "${ref}" "${vcf}" > "${vcf}.bcftools-stats"
+    plot-vcfstats -p "${vcf}.bcftools-stats.report" "${vcf}.bcftools-stats"
+    mv "${vcf}.bcftools-stats.report/summary.pdf" "${vcf}.bcftools-stats.pdf"
     """
 }
 
