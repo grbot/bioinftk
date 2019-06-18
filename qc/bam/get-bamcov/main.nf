@@ -19,8 +19,8 @@ process getBamCov {
 
     script:
     """
-    bamcov ${bam} "${bam}.bamcov.stats"
-    bamcov -m ${bam} "${bam}.bamcov.hist"
+    bamcov ${bam} > ${bam}.bamcov.stats
+    bamcov -m ${bam} > ${bam}.bamcov.hist
     """
 }
 
