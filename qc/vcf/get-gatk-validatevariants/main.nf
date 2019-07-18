@@ -10,26 +10,29 @@ Channel.fromFilePairs(in_files)
           return m[0][1]
         }.set{vcfs}
 
-process getGATKVariantEval {
-    tag { "${params.project_name}.${vcf}.gGVE" }
+process getGATKValidateVariants {
+    tag { "${params.project_name}.${vcf}.gGVV" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
     memory { 4.GB }
     input:
 	  set val (file_name), file (vcf) from vcfs
 
     output:
-	  file("${vcf[0]}.varianteval") into varianteval_file
+	  file("${vcf[0]}.validatevariants") into validatevariants_file
 
     script:
+    add_parameter = "" // set default
+    if ( params.type == "vcf" )
+      add_parameter = ""
+    else if ( params.type == "gvcf" )
+      add_parameter = "--validate-GVCF"
     """
     gatk --java-options "-Xmx${task.memory.toGiga()}g" \
-    VariantEval \
+    ValidateVariants \
     -R $params.ref \
-    -eval:${vcf[0].simpleName} ${vcf[0]} \
-    -comp:1kg_SNPs $params.kg_snps \
-    -comp:1kg_INDELs $params.kg_indels \
-    -D $params.dbsnp \
-    -O ${vcf[0]}.varianteval
+    $add_parameter \
+    -V ${vcf[0]} \
+    > ${vcf[0]}.validatevariants 2>&1
     """
 }
 
