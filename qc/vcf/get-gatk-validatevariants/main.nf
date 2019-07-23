@@ -2,6 +2,7 @@
 
 in_files = params.in_files
 out_dir = file(params.out_dir)
+reference = file(params.reference)
 
 Channel.fromFilePairs(in_files)
         { file ->
@@ -16,6 +17,7 @@ process getGATKValidateVariants {
     memory { 4.GB }
     input:
 	  set val (file_name), file (vcf) from vcfs
+    file (ref) from reference
 
     output:
 	  file("${vcf[0]}.validatevariants") into validatevariants_file
@@ -29,7 +31,7 @@ process getGATKValidateVariants {
     """
     gatk --java-options "-Xmx${task.memory.toGiga()}g" \
     ValidateVariants \
-    -R $params.ref \
+    -R $ref \
     $add_parameter \
     -V ${vcf[0]} \
     > ${vcf[0]}.validatevariants 2>&1
