@@ -3,6 +3,8 @@
 in_files = params.in_files
 out_dir = file(params.out_dir)
 reference = file(params.reference)
+reference_index = file(params.reference_index)
+reference_dict = file(params.reference_dict)
 
 Channel.fromFilePairs(in_files)
         { file ->
@@ -16,8 +18,10 @@ process getGATKValidateVariants {
     publishDir "${out_dir}", mode: 'copy', overwrite: false
     memory { 4.GB }
     input:
-	  set val (file_name), file (vcf) from vcfs
-    file (ref) from reference
+      set val (file_name), file (vcf) from vcfs
+      file (ref) from reference
+      file (index) from reference_index
+      file (dict) from reference_dict
 
     output:
 	  file("${vcf[0]}.validatevariants") into validatevariants_file
