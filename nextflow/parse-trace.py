@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.6
-# Reads a Nextflow trace.txt file and calculates the total run time
+# Reads a Nextflow trace file and calculates the total run time, CPU and memory usage
 # The format of the tracefile can be seen here: https://www.nextflow.io/docs/latest/tracing.html#trace-report
-# Output is printed to stdout
+# Output is printed to stdout in tabular format
 
 from optparse import OptionParser
 import pandas as pd
@@ -9,7 +9,7 @@ import re
 
 def main():
     parser = OptionParser(usage="usage: %prog -t trace.txt")
-    parser.add_option("-t", "--trace", dest="trace_file", help="Path to Nextflow trace filed.")
+    parser.add_option("-t", "--trace", dest="trace_file", help="Path to Nextflow trace file.")
     (options, args) = parser.parse_args()
     if not options.trace_file:
         print("No Nextflow trace file specified, please specify with the -t flag.")
@@ -90,13 +90,8 @@ def main():
     avg_cpu = avg_cpu / total_jobs
     avg_mem = avg_mem / total_jobs
 
-    print ("Total hours: " + str(total_hours))
-    print ("Total days: " + str(total_days))
-    print ("Total jobs: " + str(total_jobs))
-    print ("Max CPU %: " + str(max_cpu))
-    print ("Average CPU %: " + str(avg_cpu))
-    print ("Max memory (GB): " + str(max_mem))
-    print ("Average memory (GB): " + str(avg_mem))
+    print ("Total hours\tTotal days\tTotal jobs\tMax CPU %\tAverage CPU %\tMax memory (GB)\tAverage memory (GB)")
+    print (str(total_hours) + "\t" + str(total_days) + "\t" + str(total_jobs) + "\t" + str(max_cpu) + "\t" + str(avg_cpu) + "\t" + str(max_mem) + "\t" + str(avg_mem))
 
 if __name__ == "__main__":
     main()
