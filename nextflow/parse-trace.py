@@ -91,7 +91,7 @@ def main():
     avg_mem = avg_mem / total_jobs
 
     print ("Total hours\tTotal days\tTotal jobs\tMax CPU %\tAverage CPU %\tMax memory (GB)\tAverage memory (GB)")
-    print (str(total_hours) + "\t" + str(total_days) + "\t" + str(total_jobs) + "\t" + str(max_cpu) + "\t" + str(avg_cpu) + "\t" + str(max_mem) + "\t" + str(avg_mem))
+    print (str(round(total_hours,2)) + "\t" + str(round(total_days,2)) + "\t" + str(round(total_jobs,2)) + "\t" + str(round(max_cpu,2)) + "\t" + str(round(avg_cpu,2)) + "\t" + str(round(max_mem,2)) + "\t" + str(round(avg_mem,2)))
 
 if __name__ == "__main__":
     main()
