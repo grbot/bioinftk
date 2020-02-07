@@ -8,7 +8,7 @@ Channel.fromPath(in_files)
         .set { vcfs }
 
 process getBcftoolsStats {
-    tag { "${params.project_name}.${vcf}.gRTGS" }
+    tag { "${params.project_name}.${vcf}.gBS" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
 
     input:
