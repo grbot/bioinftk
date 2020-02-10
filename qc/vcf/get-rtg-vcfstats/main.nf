@@ -8,6 +8,7 @@ Channel.fromPath(in_files)
 
 process getRTGVcfstats {
     tag { "${params.project_name}.${vcf}.gRTGS" }
+    memory { 232.GB * task.attempt }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
 
     input:
