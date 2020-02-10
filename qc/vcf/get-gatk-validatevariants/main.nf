@@ -14,9 +14,9 @@ Channel.fromFilePairs(in_files)
         }.set{vcfs}
 
 process getGATKValidateVariants {
-    tag { "${params.project_name}.${vcf}.gGVV" }
+    tag { "${params.project_name}.${vcf[0]}.gGVV" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
-    memory { 4.GB }
+    memory { 232.GB * task.attempt }
     input:
       set val (file_name), file (vcf) from vcfs
       file (ref) from reference
@@ -32,12 +32,14 @@ process getGATKValidateVariants {
       add_parameter = ""
     else if ( params.type == "gvcf" )
       add_parameter = "--validate-GVCF"
+    mem = task.memory.toGiga() - 16
     """
-    gatk --java-options "-Xmx${task.memory.toGiga()}g" \
+    gatk --java-options "-Xmx${mem}g" \
     ValidateVariants \
     -R $ref \
     $add_parameter \
     -V ${vcf[0]} \
+//    --validation-type-to-exclude ALLELES \
     > ${vcf[0]}.validatevariants 2>&1
     """
 }
