@@ -11,9 +11,10 @@ Channel.fromFilePairs(in_files)
         }.set{vcfs}
 
 process getGATKVariantEval {
-    tag { "${params.project_name}.${vcf}.gGVE" }
+    tag { "${params.project_name}.${vcf[0]}.gGVE" }
+    memory { 232.GB * task.attempt }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
-    memory { 4.GB }
+    
     input:
 	  set val (file_name), file (vcf) from vcfs
 
@@ -21,8 +22,9 @@ process getGATKVariantEval {
 	  file("${vcf[0]}.varianteval") into varianteval_file
 
     script:
+    mem = task.memory.toGiga() - 16
     """
-    gatk --java-options "-Xmx${task.memory.toGiga()}g" \
+    gatk --java-options "-Xmx${mem}g" \
     VariantEval \
     -R $params.ref \
     -eval:${vcf[0].simpleName} ${vcf[0]} \
