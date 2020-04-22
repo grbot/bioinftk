@@ -13,4 +13,5 @@ do \
   echo -en $i"\t"; cat $i/*R1_read_count.txt | tr -d '\n'; echo -en "\t"; cat $i/*R2_read_count.txt | tr -d '\n' ; echo -en "\t"; cat $i/*R1_validated.txt | tr -d '\n'; echo -en "\t"; cat $i/*R2_validated.txt; \
 done >> all_batches.checked.tsv
 cat all_batches.checked.tsv | awk '{if ($2 != $3){print $1" forward and reverse do not match"}}'
+cat all_batches.checked.tsv | awk '{if ($4 == "FAILURE" || $5 == "FAILURE"){print $1" gzip not successful"}}'
 ```
