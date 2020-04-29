@@ -34,20 +34,27 @@ def main():
             total_jobs+=1
             # Get duration
             duration = df.loc[df.index[i],'duration']
-            pattern = re.compile("(\d*)s")
+            pattern =  re.compile("([\d\.]*)ms$")
+            milliseconds = pattern.findall(duration)
+            if (milliseconds):
+                total_hours += (float(milliseconds[0]) / 60 / 60 / 1000)
+
+            pattern =  re.compile("([\d\.]*)s$")
             seconds = pattern.findall(duration)
-            if (seconds):
+            if (seconds and not seconds[0] == ''):
                 total_hours += (float(seconds[0]) / 60 / 60)
 
-            pattern = re.compile("(\d*)m")
+            pattern = re.compile("(\d*)m$")
             minutes = pattern.findall(duration)
             if (minutes):
                 total_hours += (float(minutes[0]) / 60)
 
-            pattern = re.compile("(\d*)h")
+            pattern = re.compile("(\d*)h$")
             hours = pattern.findall(duration)
+
             if (hours):
                 total_hours += (float(hours[0]))
+
             # Get max and avg CPU
             cpu = re.sub("%","",df.loc[df.index[i],'cpu'])
             if (float(cpu) > max_cpu):
