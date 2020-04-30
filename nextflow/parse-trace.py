@@ -44,12 +44,12 @@ def main():
             if (seconds and not seconds[0] == ''):
                 total_hours += (float(seconds[0]) / 60 / 60)
 
-            pattern = re.compile("(\d*)m$")
+            pattern = re.compile("([\d\.]*)m$")
             minutes = pattern.findall(duration)
             if (minutes):
                 total_hours += (float(minutes[0]) / 60)
 
-            pattern = re.compile("(\d*)h$")
+            pattern = re.compile("([\d\.*])h$")
             hours = pattern.findall(duration)
 
             if (hours):
@@ -57,6 +57,7 @@ def main():
 
             # Get max and avg CPU
             cpu = re.sub("%","",df.loc[df.index[i],'cpu'])
+            cpu = cpu.replace(",",'.')
             if (float(cpu) > max_cpu):
                 max_cpu = float(cpu)
             avg_cpu = avg_cpu + float(cpu)
