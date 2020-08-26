@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.7
 # Reads a Nextflow trace file and calculates the total run time, CPU and memory usage
 # The format of the tracefile can be seen here: https://www.nextflow.io/docs/latest/tracing.html#trace-report
 # Output is printed to stdout in tabular format
@@ -34,22 +34,22 @@ def main():
             total_jobs+=1
             # Get duration
             duration = df.loc[df.index[i],'duration']
-            pattern =  re.compile("([\d\.]*)ms$")
+            pattern =  re.compile("([\d\.]*)ms")
             milliseconds = pattern.findall(duration)
             if (milliseconds):
                 total_hours += (float(milliseconds[0]) / 60 / 60 / 1000)
 
-            pattern =  re.compile("([\d\.]*)s$")
+            pattern =  re.compile("([\d\.]*)s")
             seconds = pattern.findall(duration)
             if (seconds and not seconds[0] == ''):
                 total_hours += (float(seconds[0]) / 60 / 60)
 
-            pattern = re.compile("([\d\.]*)m$")
+            pattern = re.compile("([\d\.]*)m")
             minutes = pattern.findall(duration)
             if (minutes):
                 total_hours += (float(minutes[0]) / 60)
 
-            pattern = re.compile("([\d\.*])h$")
+            pattern = re.compile("([\d\.]*)h")
             hours = pattern.findall(duration)
 
             if (hours):
