@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 # Reads a Nextflow trace file and calculates the total run time, CPU and memory usage
 # The format of the tracefile can be seen here: https://www.nextflow.io/docs/latest/tracing.html#trace-report
 # Output is printed to stdout in tabular format
