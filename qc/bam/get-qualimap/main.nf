@@ -8,6 +8,7 @@ Channel.fromPath(in_files)
 
 process getQualimap{
     tag { "${params.project_name}.${bam}.gQ" }
+    cpus { "${params.nt}" }
     publishDir "${out_dir}", mode: 'copy', overwrite: false
     validExitStatus 0,124
 
@@ -23,6 +24,7 @@ process getQualimap{
     timeout ${params.timeout} qualimap bamqc -bam $bam \
     -outdir ${bam}.qualimap \
     -outfile ${bam}.qualimap.html \
+    -nt ${task.cpus} \
     -outformat html
     """
 }
