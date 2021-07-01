@@ -10,7 +10,7 @@ process getFastqc {
     tag { "${params.project_name}.${bam}.gF" }
     publishDir "${out_dir}/${bam}", mode: 'copy', overwrite: false
     label 'fastqc'
-    cpus { 2 }
+    cpus { 1 }
 
     input:
 	  file (bam) from bams
