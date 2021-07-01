@@ -35,8 +35,7 @@ process runMultiQC{
     publishDir "${out_dir}/", mode: 'copy', overwrite: false
 
     input:
-        file('report.tsv') from quast_files.collect()
-
+        file('*') from quast_files.collect()
     output:
         file('multiqc_report.html')
 
@@ -44,7 +43,6 @@ process runMultiQC{
     multiqc .
     """
 }
-
 
 workflow.onComplete {
 
