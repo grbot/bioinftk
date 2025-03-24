@@ -24,7 +24,6 @@ def main():
     tmp_dir = args.tmp_dir
     sample_list = get_samples_from_vcf(vcf_file)
     print(f"Samples in VCF: {sample_list}")
-    with open(out_file, 'a') as f:
     for sample in sample_list:
         sample_vcf_file = os.path.join(tmp_dir, f"{sample}.vcf.gz")
         print("Extract " + sample + " from VCF...")
