@@ -80,7 +80,7 @@ def extract_sample_from_vcf(vcf_file, sample_name, output_file):
     """
     command = [
         "bcftools", "view",
-        "-r X", 
+        "-r chrX", 
         "--samples", sample_name,
         "--output-file", output_file,
         "--output-type", "z",
@@ -95,7 +95,7 @@ def calculate_hetero_homo_ratio(vcf_file):
     :param vcf_file: Path to the input VCF file.
     :return: Tuple containing heterozygous count, homozygous count, and their ratio.
     """
-    command = f"bcftools query -r X -f '%CHROM\\t%POS\\t[%GT]\\n' {vcf_file} | awk -F '\\t' '{{split($3, genotypes, \"/\"); if (genotypes[1] != genotypes[2]) hetero++;else homo++;}}END{{print hetero, homo, hetero / homo}}'"
+    command = f"bcftools query -r chrX -f '%CHROM\\t%POS\\t[%GT]\\n' {vcf_file} | awk -F '\\t' '{{split($3, genotypes, \"/\"); if (genotypes[1] != genotypes[2]) hetero++;else homo++;}}END{{print hetero, homo, hetero / homo}}'"
     result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
     hetero, homo, ratio = result.stdout.strip().split()
     return int(hetero), int(homo), float(ratio)
