@@ -3,13 +3,36 @@ import subprocess
 import argparse
 import sys
 import os
+import concurrent.futures
+import threading
+
+lock = threading.Lock()
+
+def process_sample(sample, vcf_file, tmp_dir, out_file):
+    sample_vcf_file = os.path.join(tmp_dir, f"{sample}.vcf.gz")
+    print("Extract " + sample + " from VCF...")
+    extract_sample_from_vcf(vcf_file, sample, sample_vcf_file)
+    print("Calculate " + sample + " sex...")
+    hetero, homo, ratio = calculate_hetero_homo_ratio(sample_vcf_file)
+    print(f"Sample: {sample}, Heterozygous: {hetero}, Homozygous: {homo}, Ratio: {ratio}")
+    if ratio < 0.01:
+        sex = "male"
+    elif 0.4 < ratio < 0.6:
+        sex = "female"
+    else:
+        sex = "unknown"
+    print(f"Sample: {sample}, Sex: {sex}")
+    with lock:
+        with open(out_file, 'a') as f:
+            f.write(f"{sample}\t{sex}\t{homo}\t{hetero}\t{ratio}\n")
 
 def main():
-    usage = "usage: -v VCF_FILE -o SAMPLE_SEX_FILE [-t TMP_DIR]"
+    usage = "usage: -v VCF_FILE -o SAMPLE_SEX_FILE [-t TMP_DIR] [-n NUM_THREADS]"
     parser = argparse.ArgumentParser(description=usage)
     parser.add_argument("-v", "--vcf", dest="vcf_file", required=True, help="Single or multisample VCF.")
     parser.add_argument("-o", "--out", dest="out_file", required=True, help="Contains a list of samples and their sex.")
     parser.add_argument("-t", "--tmp", dest="tmp_dir", default="/tmp", help="Temporary directory for intermediate files.")
+    parser.add_argument("-n", "--num_threads", dest="num_threads", type=int, default=4, help="Number of threads to use.")
     args = parser.parse_args()
 
     if not args.vcf_file:
@@ -22,24 +45,14 @@ def main():
     vcf_file = args.vcf_file
     out_file = args.out_file
     tmp_dir = args.tmp_dir
+    num_threads = args.num_threads
     sample_list = get_samples_from_vcf(vcf_file)
     print(f"Samples in VCF: {sample_list}")
-    for sample in sample_list:
-        sample_vcf_file = os.path.join(tmp_dir, f"{sample}.vcf.gz")
-        print("Extract " + sample + " from VCF...")
-        extract_sample_from_vcf(vcf_file, sample, sample_vcf_file)
-        print("Calculate " + sample + " sex...")
-        hetero, homo, ratio = calculate_hetero_homo_ratio(sample_vcf_file)
-        print(f"Sample: {sample}, Heterozygous: {hetero}, Homozygous: {homo}, Ratio: {ratio}")
-        if ratio < 0.01:
-            sex = "male"
-        elif 0.4 < ratio < 0.6:
-            sex = "female"
-        else:
-            sex = "unknown"
-        print(f"Sample: {sample}, Sex: {sex}")
-        with open(out_file, 'a') as f:
-            f.write(f"{sample}\t{sex}\t{homo}\t{hetero}\t{ratio}\n")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+        futures = [executor.submit(process_sample, sample, vcf_file, tmp_dir, out_file) for sample in sample_list]
+        for future in concurrent.futures.as_completed(futures):
+            future.result()
 
 def get_samples_from_vcf(vcf_file):
     """
