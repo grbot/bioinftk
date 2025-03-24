@@ -24,9 +24,12 @@ def main():
     tmp_dir = args.tmp_dir
     sample_list = get_samples_from_vcf(vcf_file)
     print(f"Samples in VCF: {sample_list}")
+    with open(out_file, 'a') as f:
     for sample in sample_list:
         sample_vcf_file = os.path.join(tmp_dir, f"{sample}.vcf.gz")
+        print("Extract " + sample + " from VCF...")
         extract_sample_from_vcf(vcf_file, sample, sample_vcf_file)
+        print("Calculate " + sample + " sex...")
         hetero, homo, ratio = calculate_hetero_homo_ratio(sample_vcf_file)
         print(f"Sample: {sample}, Heterozygous: {hetero}, Homozygous: {homo}, Ratio: {ratio}")
         if ratio < 0.01:
@@ -36,6 +39,8 @@ def main():
         else:
             sex = "unknown"
         print(f"Sample: {sample}, Sex: {sex}")
+        with open(out_file, 'a') as f:
+            f.write(f"{sample}\t{sex}\t{homo}\t{hetero}\t{ratio}\n")
 
 def get_samples_from_vcf(vcf_file):
     """
