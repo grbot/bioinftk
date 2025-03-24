@@ -1,19 +1,16 @@
 #!/usr/bin/env python3                                          
-import subprocess
 import argparse
 import sys
 import os
 import concurrent.futures
 import threading
+import pysam
 
 lock = threading.Lock()
 
-def process_sample(sample, vcf_file, tmp_dir, out_file):
-    sample_vcf_file = os.path.join(tmp_dir, f"{sample}.vcf.gz")
-    print("Extract " + sample + " from VCF...")
-    extract_sample_from_vcf(vcf_file, sample, sample_vcf_file)
+def process_sample(sample, vcf_file, out_file):
     print("Calculate " + sample + " sex...")
-    hetero, homo, ratio = calculate_hetero_homo_ratio(sample_vcf_file)
+    hetero, homo, ratio = calculate_hetero_homo_ratio(vcf_file, sample)
     print(f"Sample: {sample}, Heterozygous: {hetero}, Homozygous: {homo}, Ratio: {ratio}")
     if ratio < 0.01:
         sex = "male"
@@ -27,11 +24,10 @@ def process_sample(sample, vcf_file, tmp_dir, out_file):
             f.write(f"{sample}\t{sex}\t{homo}\t{hetero}\t{ratio}\n")
 
 def main():
-    usage = "usage: -v VCF_FILE -o SAMPLE_SEX_FILE [-t TMP_DIR] [-n NUM_THREADS]"
+    usage = "usage: -v VCF_FILE -o SAMPLE_SEX_FILE [-n NUM_THREADS]"
     parser = argparse.ArgumentParser(description=usage)
     parser.add_argument("-v", "--vcf", dest="vcf_file", required=True, help="Single or multisample VCF.")
     parser.add_argument("-o", "--out", dest="out_file", required=True, help="Contains a list of samples and their sex.")
-    parser.add_argument("-t", "--tmp", dest="tmp_dir", default="/tmp", help="Temporary directory for intermediate files.")
     parser.add_argument("-n", "--num_threads", dest="num_threads", type=int, default=1, help="Number of threads to use.")
     args = parser.parse_args()
 
@@ -44,61 +40,45 @@ def main():
     
     vcf_file = args.vcf_file
     out_file = args.out_file
-    tmp_dir = args.tmp_dir
     num_threads = args.num_threads
     sample_list = get_samples_from_vcf(vcf_file)
     print(f"Samples in VCF: {sample_list}")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = [executor.submit(process_sample, sample, vcf_file, tmp_dir, out_file) for sample in sample_list]
+        futures = [executor.submit(process_sample, sample, vcf_file, out_file) for sample in sample_list]
         for future in concurrent.futures.as_completed(futures):
             future.result()
 
 def get_samples_from_vcf(vcf_file):
     """
-    Get a list of samples from a VCF file using bcftools.
+    Get a list of samples from a VCF file using pysam.
 
     :param vcf_file: Path to the input VCF file.
     :return: List of sample names.
     """
-    command = [
-        "bcftools", "query",
-        "--list-samples",
-        vcf_file
-    ]
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
-    samples = result.stdout.strip().split('\n')
-    return samples
+    vcf = pysam.VariantFile(vcf_file)
+    return list(vcf.header.samples)
 
-def extract_sample_from_vcf(vcf_file, sample_name, output_file):
+def calculate_hetero_homo_ratio(vcf_file, sample_name):
     """
-    Extract a sample from a multisample VCF file using bcftools.
+    Calculate the heterozygous and homozygous counts and their ratio from a VCF file using pysam.
 
     :param vcf_file: Path to the input VCF file.
-    :param sample_name: Name of the sample to extract.
-    :param output_file: Path to the output VCF file.
-    """
-    command = [
-        "bcftools", "view",
-        "-r chrX", 
-        "--samples", sample_name,
-        "--output-file", output_file,
-        "--output-type", "z",
-        vcf_file
-    ]
-    subprocess.run(command, check=True)
-
-def calculate_hetero_homo_ratio(vcf_file):
-    """
-    Calculate the heterozygous and homozygous counts and their ratio from a VCF file.
-
-    :param vcf_file: Path to the input VCF file.
+    :param sample_name: Name of the sample to calculate the ratio for.
     :return: Tuple containing heterozygous count, homozygous count, and their ratio.
     """
-    command = f"bcftools query -r chrX -f '%CHROM\\t%POS\\t[%GT]\\n' {vcf_file} | awk -F '\\t' '{{split($3, genotypes, \"/\"); if (genotypes[1] != genotypes[2]) hetero++;else homo++;}}END{{print hetero, homo, hetero / homo}}'"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
-    hetero, homo, ratio = result.stdout.strip().split()
-    return int(hetero), int(homo), float(ratio)
+    vcf = pysam.VariantFile(vcf_file)
+    hetero = 0
+    homo = 0
+    for record in vcf.fetch('chrX'):
+        if sample_name in record.samples:
+            gt = record.samples[sample_name]['GT']
+            if gt[0] != gt[1]:
+                hetero += 1
+            else:
+                homo += 1
+    ratio = hetero / homo if homo != 0 else float('inf')
+    return hetero, homo, ratio
 
 if __name__ == "__main__":
     main()
