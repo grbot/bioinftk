@@ -32,7 +32,7 @@ def main():
     parser.add_argument("-v", "--vcf", dest="vcf_file", required=True, help="Single or multisample VCF.")
     parser.add_argument("-o", "--out", dest="out_file", required=True, help="Contains a list of samples and their sex.")
     parser.add_argument("-t", "--tmp", dest="tmp_dir", default="/tmp", help="Temporary directory for intermediate files.")
-    parser.add_argument("-n", "--num_threads", dest="num_threads", type=int, default=4, help="Number of threads to use.")
+    parser.add_argument("-n", "--num_threads", dest="num_threads", type=int, default=1, help="Number of threads to use.")
     args = parser.parse_args()
 
     if not args.vcf_file:
@@ -79,7 +79,8 @@ def extract_sample_from_vcf(vcf_file, sample_name, output_file):
     :param output_file: Path to the output VCF file.
     """
     command = [
-        "bcftools", "view", 
+        "bcftools", "view",
+        "-r X", 
         "--samples", sample_name,
         "--output-file", output_file,
         "--output-type", "z",
