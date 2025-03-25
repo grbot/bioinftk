@@ -73,7 +73,6 @@ def calculate_hetero_homo_ratio(vcf_file, sample_name):
     for record in vcf.fetch('chrX'):
         if sample_name in record.samples:
             gt = record.samples[sample_name]['GT']
-            print (sample_name + " " + gt)
             if gt[0] != gt[1]:
                 hetero += 1
             else:
